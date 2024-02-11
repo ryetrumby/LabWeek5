@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class HPCalculator : MonoBehaviour
 {
-    [SerializeField] private int maxHP;
+    private int maxHP;
+    private int diceToUse;
+    private float avgHitDie;
+    [SerializeField] private string charClass;
     [SerializeField] private int charLevel;
     [SerializeField] private int constScore;
-    [SerializeField] private int diceToUse;
-    [SerializeField] private float avgHitDie;
-    [SerializeField] private string charClass = "Artificer";
-    [SerializeField] private string charName;
     [SerializeField] private bool hillDwarf;
     [SerializeField] private bool tough;
     [SerializeField] private bool averaged;
@@ -66,30 +65,31 @@ public class HPCalculator : MonoBehaviour
             {28, 9 },
             {29, 9 },
             {30, 10 }
-        };
-
-
-
+        };   
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Uses this Dice: " + diceToUse);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        checkForCharClass();
     }
     void checkForCharClass()
     {
         if (dieClass.ContainsKey(charClass))
             {
-                diceToUse = dieClass[charClass];
+                int value = dieClass[charClass];
+                diceToUse = value;
+                Debug.Log("Uses this Dice: " + diceToUse);
             }
             else
             {
                 Debug.Log("Class does not exist in 5e");
             }
     }
+    //The comment below should be the final output
+    //Debug.Log("Your HP value is : " + maxHP)
 }
