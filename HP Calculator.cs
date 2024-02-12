@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +8,13 @@ public class HPCalculator : MonoBehaviour
 {
     private int maxHP;
     private int diceToUse;
+    private int constProficiency;
     private float avgHitDie;
+    private int randHitDie;
+    private int hillDwarfBonus;
+    private int toughBonus;
+    private int constBonus;
+    [SerializeField] private string charName;
     [SerializeField] private string charClass;
     [SerializeField] private int charLevel;
     [SerializeField] private int constScore;
@@ -69,27 +77,99 @@ public class HPCalculator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log(charName);
+        Debug.Log(charClass);
+        checkForCharClass();
+        checkForConstModifier();
+        HpCalculator();
+        Debug.Log(randHitDie);
     }
 
     // Update is called once per frame
     void Update()
     {
-        checkForCharClass();
+        
     }
+
+    // Function for determining hit die of class
     void checkForCharClass()
     {
         if (dieClass.ContainsKey(charClass))
             {
                 int value = dieClass[charClass];
                 diceToUse = value;
-                Debug.Log("Uses this Dice: " + diceToUse);
+                Debug.Log("Class uses this Dice: " + diceToUse);
             }
             else
             {
                 Debug.Log("Class does not exist in 5e");
             }
     }
+
+    // Function for calculating the constitution score proficiency
+    void checkForConstModifier()
+    {
+        if (constModifier.ContainsKey(constScore))
+        {
+            int value = constModifier[constScore];
+            constProficiency = value;
+            Debug.Log("Constitution proficiency is " + constProficiency);
+        }
+        else
+        {
+            Debug.Log("Invalid constitution score entered");
+        }
+    }
+
+    // Function for random dice values
+    void DiceRolls()
+    {
+        System.Random rnd = new System.Random();
+        int[] hitDiceRolls = new int[charLevel];
+
+        for (int i = 0; i <= charLevel; i++)
+        {
+            hitDiceRolls[i] = rnd.Next(1, charLevel);
+        }
+
+        randHitDie = hitDiceRolls.Sum();
+    }
+    // Function for calculating the HP of the character
+    void HpCalculator()
+    {
+        avgHitDie = (diceToUse + 1) / 2;
+        constBonus = charLevel * constProficiency;
+
+        if (hillDwarf == true)
+        {
+            hillDwarfBonus = 2 * charLevel;
+        }
+        else
+        {
+            hillDwarfBonus = 0;
+        }
+
+        if (tough == true)
+        {
+            toughBonus = charLevel;
+        }
+        else
+        {
+            toughBonus = 0;
+        }
+
+        if (averaged == true)
+        {
+            maxHP = ((int)avgHitDie * charLevel) + hillDwarfBonus + constBonus + toughBonus;
+        }
+        else
+        {
+            maxHP = randHitDie + hillDwarfBonus + constBonus + toughBonus;
+        }
+
+        Debug.Log(charName + " the " + charClass + " has a total HP of " + maxHP);
+    }
+
     //The comment below should be the final output
     //Debug.Log("Your HP value is : " + maxHP)
 }
