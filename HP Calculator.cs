@@ -1,7 +1,6 @@
-using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HPCalculator : MonoBehaviour
@@ -80,12 +79,9 @@ public class HPCalculator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(charName);
-        Debug.Log(charClass);
         checkForCharClass();
         checkForConstModifier();
         HpCalculator();
-        DiceRolls();
     }
 
     // Update is called once per frame
@@ -124,28 +120,29 @@ public class HPCalculator : MonoBehaviour
         }
     }
 
-    // Function for random dice values
-    void DiceRolls()
-    {
-        System.Random rnd = new System.Random();
-        int[] hitDiceRolls = new int[charLevel];
 
-        for (int i = 0; i <= charLevel; i++)
-        {
-            hitDiceRolls[i] = rnd.Next(1, diceToUse);
-        }
-
-        randHitDie = hitDiceRolls.Sum();
-    }
     // Function for calculating the HP of the character
     void HpCalculator()
     {
         avgHitDie = (diceToUse + 1) / 2;
         constBonus = charLevel * constProficiency;
 
+        int numOfDie = charLevel;
+        var hitDiceRolls = new int[numOfDie];
+
+        for (int i = 0; i < numOfDie; i++)
+        {
+            hitDiceRolls[i] = Random.Range(1, diceToUse);
+        }
+
+        foreach (var value in hitDiceRolls)
+        {
+            randHitDie += value;
+        }
+
         if (hillDwarf == true)
         {
-            hillDwarfBonus = 2 * charLevel;
+            hillDwarfBonus = charLevel;
         }
         else
         {
@@ -154,7 +151,7 @@ public class HPCalculator : MonoBehaviour
 
         if (tough == true)
         {
-            toughBonus = charLevel;
+            toughBonus = 2 * charLevel;
         }
         else
         {
