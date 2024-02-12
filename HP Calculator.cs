@@ -22,6 +22,7 @@ public class HPCalculator : MonoBehaviour
     [SerializeField] private bool tough;
     [SerializeField] private bool averaged;
 
+    // Dictionary for hit dice values
     Dictionary<string, int> dieClass =
         new Dictionary<string, int>()
         {
@@ -40,6 +41,7 @@ public class HPCalculator : MonoBehaviour
             {"Warlock", 8 }
         };
 
+    // Dictionary for consitution proficiency modifiers
     Dictionary<int, int> constModifier =
         new Dictionary<int, int>()
         {
@@ -74,6 +76,7 @@ public class HPCalculator : MonoBehaviour
             {29, 9 },
             {30, 10 }
         };   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,7 +85,7 @@ public class HPCalculator : MonoBehaviour
         checkForCharClass();
         checkForConstModifier();
         HpCalculator();
-        Debug.Log(randHitDie);
+        DiceRolls();
     }
 
     // Update is called once per frame
@@ -129,7 +132,7 @@ public class HPCalculator : MonoBehaviour
 
         for (int i = 0; i <= charLevel; i++)
         {
-            hitDiceRolls[i] = rnd.Next(1, charLevel);
+            hitDiceRolls[i] = rnd.Next(1, diceToUse);
         }
 
         randHitDie = hitDiceRolls.Sum();
